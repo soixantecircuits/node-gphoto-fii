@@ -1,11 +1,15 @@
 {
-  "name": "test_gphoto2_ffi",
-  "version": "1.0.0",
-  "description": "",
-  "main": "main.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Olivier FAURE",
-  "license": "ISC"
+  "name": "tests_gphoto2",
+  "version": "0.1.0",
+  "description": " Tests for a Node.js wrapper of C library libgphoto2",
+  "main": "gphoto2.js",
+  "repository": "https://github.com/PoignardAzur/tests_gphoto2.git",
+  "author": "Olivier FAURE <olivier.faure@epitech.eu>",
+  "license": "MIT",
+  "dependencies": {
+    "ffi": "^2.2.0",
+    "ref": "^1.3.3",
+    "ref-array": "^1.2.0",
+    "ref-struct": "^1.1.0"
+  }
 }
