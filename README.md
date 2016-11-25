@@ -6,7 +6,7 @@ functions of the C library libgphoto2.
 
 
 Example
-=======
+-------
 
     var ref = require("ref");
     var lib = require("./gphoto2");
@@ -32,6 +32,6 @@ Example
 
 
 License
-=======
+-------
 
 License MIT. See `LICENSE` file.
