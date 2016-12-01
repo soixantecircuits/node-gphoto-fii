@@ -1,7 +1,7 @@
 var ref = require("ref");
 var lib = require("./gphoto2");
 
-function use_camera(context, camera)
+function use_camera(context, camera, dest_path)
 {
     pathPtr = ref.alloc(lib.CameraFilePath);
     //path = new lib.CameraFilePath
@@ -9,8 +9,7 @@ function use_camera(context, camera)
     let res = lib.gp_camera_capture(camera, lib.GP_CAPTURE_IMAGE, pathPtr, context);
     if (res < 0)
     {
-        console.log("ERROOOOOOR");
-        //printf("Could not capture image:\n%s\n", lib.gp_port_result_as_string(res));
+        console.log("Could not capture image:\n" + lib.gp_port_result_as_string(res));
         return (-1);
     }
     path_folder = pathPtr.deref().folder.buffer.readCString(0);
@@ -30,7 +29,6 @@ function use_camera(context, camera)
         return (-1);
     }
 
-    let dest_path = "my_photo";
     res = lib.gp_file_save(dest, dest_path);
     if (res < 0)
     {
@@ -70,7 +68,14 @@ function main()
         console.log("Could not initialize camera\n");
         return -1;
     }
-    use_camera(context, camera);
+
+    for (let i = 0; i < 10; i++)
+    {
+        res = use_camera(context, camera, "my_photo_" + i + ".cr2");
+        if (res < 0)
+            return res;
+    }
+
 
     lib.gp_camera_exit(camera, context);
     lib.gp_camera_unref(camera);
