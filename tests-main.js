@@ -1,12 +1,13 @@
 var ref = require("ref");
 var lib = require("./gphoto2");
+var get_config = require("./get_config");
 
 function use_camera(context, camera, dest_path)
 {
     pathPtr = ref.alloc(lib.CameraFilePath);
     //path = new lib.CameraFilePath
 
-    let res = lib.gp_camera_capture(camera, lib.GP_CAPTURE_IMAGE, pathPtr, context);
+    var res = lib.gp_camera_capture(camera, lib.GP_CAPTURE_IMAGE, pathPtr, context);
     if (res < 0)
     {
         console.log("Could not capture image:\n" + lib.gp_port_result_as_string(res));
@@ -16,10 +17,10 @@ function use_camera(context, camera, dest_path)
     path_name = pathPtr.deref().name.buffer.readCString(0);
     console.log("Photo temporarily saved in " + path_folder + path_name);
 
-    let destPtr = ref.alloc(lib.CameraFile);
+    var destPtr = ref.alloc(lib.CameraFile);
     if (lib.gp_file_new(destPtr) < 0)
         return -1;
-    let dest = destPtr.deref();
+    var dest = destPtr.deref();
     res = lib.gp_camera_file_get(camera, path_folder, path_name,
         lib.GP_FILE_TYPE_NORMAL, dest, context);
     if (res < 0)
@@ -44,32 +45,32 @@ function use_camera(context, camera, dest_path)
 
 function main()
 {
-    let context = lib.gp_context_new()
+    var context = lib.gp_context_new()
 
     if (context.isNull())
         return 1;
 
-    let cameraInfosPtr = ref.alloc(lib.CameraList);
+    var cameraInfosPtr = ref.alloc(lib.CameraList);
     if (lib.gp_list_new(cameraInfosPtr) < 0)
         return 1;
-    let cameraInfos = cameraInfosPtr.deref();
+    var cameraInfos = cameraInfosPtr.deref();
 
     if (lib.gp_camera_autodetect(cameraInfos, context) < 0)
         return 1;
     console.log(lib.gp_list_count(cameraInfos) + " cameras detected");
     lib.gp_list_unref(cameraInfos);
 
-    let cameraPtr = ref.alloc(lib.Camera);
+    var cameraPtr = ref.alloc(lib.Camera);
     if (lib.gp_camera_new(cameraPtr) < 0)
         return -1;
-    let camera = cameraPtr.deref();
+    var camera = cameraPtr.deref();
     if (lib.gp_camera_init(camera, context) < 0)
     {
         console.log("Could not initialize camera\n");
         return -1;
     }
 
-    for (let i = 0; i < 10; i++)
+    for (var i = 0; i < 10; i++)
     {
         res = use_camera(context, camera, "my_photo_" + i + ".cr2");
         if (res < 0)
