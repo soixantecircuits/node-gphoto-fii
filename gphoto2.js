@@ -22,10 +22,21 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_port_result_as_string":     ["string", ["int"]],
 
     "gp_list_new":          ["int", [RefT(CameraList)]],
+    "gp_list_ref":          ["int", [CameraList]],
     "gp_list_count":        ["int", [CameraList]],
     "gp_list_unref":        ["int", [CameraList]],
+    "gp_list_free":         ["int", [CameraList]],
+    "gp_list_append":       ["int", [CameraList, "string", "string"]],
+    "gp_list_reset":        ["int", [CameraList]],
+    "gp_list_sort":         ["int", [CameraList]],
+    "gp_list_find_by_name": ["int", [CameraList, "int*", "string"]],
+    "gp_list_get_name":     ["int", [CameraList, "int", RefT("string")]],
+    "gp_list_get_value":    ["int", [CameraList, "int", RefT("string")]],
+    "gp_list_set_name":     ["int", [CameraList, "int", "string"]],
+    "gp_list_set_value":    ["int", [CameraList, "int", "string"]],
 
     "gp_camera_autodetect": ["int", [CameraList, GPContext]],
+
     "gp_camera_new":        ["int", [RefT(Camera)]],
     "gp_camera_init":       ["int", [Camera, GPContext]],
     "gp_camera_capture": [
