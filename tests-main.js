@@ -70,6 +70,11 @@ function main()
         return -1;
     }
 
+    var configPtr = ref.alloc(lib.CameraWidget);
+    lib.gp_camera_get_config(camera, configPtr, context);
+    configValue = get_config.getWidgetValue(configPtr.deref());
+    console.log(configValue);
+
     for (var i = 0; i < 10; i++)
     {
         res = use_camera(context, camera, "my_photo_" + i + ".cr2");

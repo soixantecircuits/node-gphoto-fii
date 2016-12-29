@@ -9,6 +9,7 @@ var GPContext = RefT("void");
 var CameraList = RefT("void");
 var Camera = RefT("void");
 var CameraFile = RefT("void");
+var CameraWidget = RefT("void");
 
 var CameraFilePath = Struct({
     name: ArrayType(ref.types.uchar, 128),
@@ -35,6 +36,7 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_list_set_name":     ["int", [CameraList, "int", "string"]],
     "gp_list_set_value":    ["int", [CameraList, "int", "string"]],
 
+// To check
     "gp_camera_autodetect": ["int", [CameraList, GPContext]],
 
     "gp_camera_new":        ["int", [RefT(Camera)]],
@@ -45,12 +47,24 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_camera_exit":       ["int", [Camera, GPContext]],
     "gp_camera_unref":      ["int", [Camera]],
 
+    "gp_camera_get_config": ["int", [Camera, RefT(CameraWidget), GPContext]],
+
+    "gp_widget_unref":          ["int", [CameraWidget]],
+    "gp_widget_get_type":       ["int", [CameraWidget, RefT("int")]],
+    "gp_widget_get_label":      ["int", [CameraWidget, RefT("string")]],
+    "gp_widget_get_value":      ["int", [CameraWidget, RefT("string")]],
+    "gp_widget_get_range":      [
+        "int", [CameraWidget, RefT("float"), RefT("float"), RefT("float")]
+    ],
+    "gp_widget_count_choices":  ["int", [CameraWidget]],
+    "gp_widget_get_choice":     ["int", [CameraWidget, "int", RefT("string")]],
+
     "gp_file_new":          ["int", [RefT(CameraFile)]],
     "gp_camera_file_get":   [
         "int", [CameraFile, "string", "string", "int", CameraFile, GPContext]
     ],
     "gp_file_save":         ["int", [CameraFile, "string"]],
-    "gp_file_unref":        ["int", [CameraFile]]
+    "gp_file_unref":        ["int", [CameraFile]],
 } );
 
 module.exports = gphoto2
@@ -59,7 +73,9 @@ module.exports.GPContext =          GPContext;
 module.exports.CameraList =         CameraList;
 module.exports.Camera =             Camera;
 module.exports.CameraFile =         CameraFile;
+module.exports.CameraWidget =       CameraWidget;
 module.exports.CameraFilePath =     CameraFilePath;
+module.exports.CameraWidgetType =   RefT("int");
 
 module.exports.GP_OK =                            0;
 module.exports.GP_ERROR =                        -1;
@@ -86,3 +102,13 @@ module.exports.GP_ERROR_HAL =                    -70;
 
 module.exports.GP_CAPTURE_IMAGE = 0;
 module.exports.GP_FILE_TYPE_NORMAL = 1;
+
+module.exports.GP_WIDGET_WINDOW =   0;
+module.exports.GP_WIDGET_SECTION =  1;
+module.exports.GP_WIDGET_TEXT =     2;
+module.exports.GP_WIDGET_RANGE =    3;
+module.exports.GP_WIDGET_TOGGLE =   4;
+module.exports.GP_WIDGET_RADIO =    5;
+module.exports.GP_WIDGET_MENU =     6;
+module.exports.GP_WIDGET_BUTTON =   7;
+module.exports.GP_WIDGET_DATE =     8;
