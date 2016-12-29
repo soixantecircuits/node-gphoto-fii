@@ -9,53 +9,69 @@ var GPContext = RefT("void");
 var CameraList = RefT("void");
 var Camera = RefT("void");
 var CameraFile = RefT("void");
-var CameraFilePath = RefT("void");
 
-ByteArray = ArrayType(ref.types.uchar);
-
-//console.log(ByteArray);
-//console.log(ArrayType(ref.types.uchar, 10));
-
-CameraFilePath = Struct({
+var CameraFilePath = Struct({
     name: ArrayType(ref.types.uchar, 128),
     folder: ArrayType(ref.types.uchar, 1024)
 });
 
 var gphoto2 = ffi.Library("libgphoto2", {
-    "gp_context_new":               [GPContext, []],
-    "gp_context_unref":             ["void", [GPContext]],
+    "gp_context_new":       [GPContext, []],
+    "gp_context_unref":     ["void", [GPContext]],
 
     "gp_port_result_as_string":     ["string", ["int"]],
 
-    "gp_list_new":                  ["int", [RefT(CameraList)]],
-    "gp_list_count":                ["int", [CameraList]],
-    "gp_list_unref":                ["int", [CameraList]],
+    "gp_list_new":          ["int", [RefT(CameraList)]],
+    "gp_list_count":        ["int", [CameraList]],
+    "gp_list_unref":        ["int", [CameraList]],
 
-    "gp_camera_autodetect":         ["int", [CameraList, GPContext]],
-
-    "gp_camera_new":                ["int", [RefT(Camera)]],
-    "gp_camera_init":               ["int", [Camera, GPContext]],
-    "gp_camera_capture":            [
+    "gp_camera_autodetect": ["int", [CameraList, GPContext]],
+    "gp_camera_new":        ["int", [RefT(Camera)]],
+    "gp_camera_init":       ["int", [Camera, GPContext]],
+    "gp_camera_capture": [
         "int", [Camera, "int", RefT(CameraFilePath), GPContext]
     ],
-    "gp_camera_exit":               ["int", [Camera, GPContext]],
-    "gp_camera_unref":              ["int", [Camera]],
+    "gp_camera_exit":       ["int", [Camera, GPContext]],
+    "gp_camera_unref":      ["int", [Camera]],
 
-    "gp_file_new":                  ["int", [RefT(CameraFile)]],
-    "gp_camera_file_get":           [
+    "gp_file_new":          ["int", [RefT(CameraFile)]],
+    "gp_camera_file_get":   [
         "int", [CameraFile, "string", "string", "int", CameraFile, GPContext]
     ],
-    "gp_file_save":                 ["int", [CameraFile, "string"]],
-    "gp_file_unref":                ["int", [CameraFile]]
+    "gp_file_save":         ["int", [CameraFile, "string"]],
+    "gp_file_unref":        ["int", [CameraFile]]
 } );
 
 module.exports = gphoto2
 
-module.exports.GPContext = GPContext
-module.exports.CameraList = CameraList
-module.exports.Camera = Camera
-module.exports.CameraFile = CameraFile
-module.exports.CameraFilePath = CameraFilePath
+module.exports.GPContext =          GPContext;
+module.exports.CameraList =         CameraList;
+module.exports.Camera =             Camera;
+module.exports.CameraFile =         CameraFile;
+module.exports.CameraFilePath =     CameraFilePath;
+
+module.exports.GP_OK =                            0;
+module.exports.GP_ERROR =                        -1;
+module.exports.GP_ERROR_BAD_PARAMETERS =         -2;
+module.exports.GP_ERROR_NO_MEMORY =              -3;
+module.exports.GP_ERROR_LIBRARY =                -4;
+module.exports.GP_ERROR_UNKNOWN_PORT =           -5;
+module.exports.GP_ERROR_NOT_SUPPORTED =          -6;
+module.exports.GP_ERROR_IO =                     -7;
+module.exports.GP_ERROR_FIXED_LIMIT_EXCEEDED =   -8;
+module.exports.GP_ERROR_TIMEOUT =                -10;
+module.exports.GP_ERROR_IO_SUPPORTED_SERIAL =    -20;
+module.exports.GP_ERROR_IO_SUPPORTED_USB =       -21;
+module.exports.GP_ERROR_IO_INIT =                -31;
+module.exports.GP_ERROR_IO_READ =                -34;
+module.exports.GP_ERROR_IO_WRITE =               -35;
+module.exports.GP_ERROR_IO_UPDATE =              -37;
+module.exports.GP_ERROR_IO_SERIAL_SPEED =        -41;
+module.exports.GP_ERROR_IO_USB_CLEAR_HALT =      -51;
+module.exports.GP_ERROR_IO_USB_FIND =            -52;
+module.exports.GP_ERROR_IO_USB_CLAIM =           -53;
+module.exports.GP_ERROR_IO_LOCK =                -60;
+module.exports.GP_ERROR_HAL =                    -70;
 
 module.exports.GP_CAPTURE_IMAGE = 0;
 module.exports.GP_FILE_TYPE_NORMAL = 1;
