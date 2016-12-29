@@ -1,5 +1,5 @@
 var ref = require("ref");
-var gphoto = require("./gphoto2");
+var gphoto = require("../gphoto2");
 var assert = require("assert");
 
 var context = gphoto.gp_context_new();

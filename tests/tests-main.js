@@ -1,6 +1,6 @@
 var ref = require("ref");
-var lib = require("./gphoto2");
-var get_config = require("./get_config");
+var lib = require("../gphoto2");
+var get_config = require("../get_config");
 
 function use_camera(context, camera, dest_path)
 {
