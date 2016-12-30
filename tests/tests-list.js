@@ -27,7 +27,6 @@ assert.equal(count, 5);
 
 assert.equal(gphoto.gp_list_sort(list), gphoto.GP_OK);
 assert.equal(gphoto.gp_list_count(list), count);
-// TODO - After adding GetListName, check values are sorted
 
 var foundId = ref.alloc("int");
 assert.equal(gphoto.gp_list_find_by_name(list, foundId, "Name0"), gphoto.GP_OK);
@@ -41,18 +40,17 @@ assert.equal(
     gphoto.GP_ERROR
 );
 
-/*
-    "gp_list_ref":                  ["int", [CameraList]],
-    "gp_list_count":                ["int", [CameraList]],
-    "gp_list_unref":                ["int", [CameraList]],
-    "gp_list_append":               ["int", [CameraList, "string", "string"]],
-    "gp_list_reset":                ["int", [CameraList]],
-    "gp_list_sort":                 ["int", [CameraList]],
-    "gp_list_find_by_name":         ["int", [CameraList, "int*", "string"]],
-    "gp_list_get_name":             ["int", [CameraList, "int", RefT("string")]],
-    "gp_list_get_value":            ["int", [CameraList, "int", RefT("string")]],
-    "gp_list_set_name":             ["int", [CameraList, "int", "string"]],
-    "gp_list_set_value":            ["int", [CameraList, "int", "string"]],
-*/
+var name = ref.alloc("string");
+var value = ref.alloc("string");
+assert.equal(gphoto.gp_list_set_name(list, 0, "NewName"), gphoto.GP_OK);
+assert.equal(gphoto.gp_list_set_value(list, 0, "NewValue"), gphoto.GP_OK);
+assert.equal(gphoto.gp_list_get_name(list, 0, name), gphoto.GP_OK);
+assert.equal(gphoto.gp_list_get_value(list, 0, value), gphoto.GP_OK);
+assert.equal(name.deref(), "NewName");
+assert.equal(value.deref(), "NewValue");
+
+//int 	gp_list_populate (CameraList *list, const char *format, int count)
+
+gphoto.gp_list_unref(list);
 
 gphoto.gp_context_unref(context);
