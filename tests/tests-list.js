@@ -7,7 +7,7 @@ var context = gphoto.gp_context_new();
 var listPtr = ref.alloc(gphoto.CameraList);
 
 assert.equal(gphoto.gp_list_new(listPtr), gphoto.GP_OK);
-list = listPtr.deref();
+var list = listPtr.deref();
 assert(!ref.isNull(list));
 assert.equal(gphoto.gp_list_count(list), 0);
 
