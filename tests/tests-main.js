@@ -50,10 +50,7 @@ function main()
     if (context.isNull())
         return 1;
 
-    var cameraInfosPtr = ref.alloc(lib.CameraList);
-    if (lib.gp_list_new(cameraInfosPtr) < 0)
-        return 1;
-    var cameraInfos = cameraInfosPtr.deref();
+    var cameraInfos = lib.NewList();
 
     if (lib.gp_camera_autodetect(cameraInfos, context) < 0)
         return 1;

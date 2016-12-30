@@ -2,6 +2,7 @@ var ref = require("ref");
 var ArrayType = require("ref-array");
 var Struct = require("ref-struct");
 var ffi = require("ffi");
+var assert = require("assert");
 
 var RefT = ref.refType;
 
@@ -68,7 +69,16 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_file_unref":        ["int", [CameraFile]],
 } );
 
+function NewList() {
+    var listPtr = ref.alloc(module.exports.CameraList);
+    var res = module.exports.gp_list_new(listPtr);
+    assert.equal(res, module.exports.GP_OK);
+    return listPtr.deref();
+}
+
 module.exports = gphoto2
+
+module.exports.NewList = NewList;
 
 module.exports.GPContext =          GPContext;
 module.exports.CameraList =         CameraList;

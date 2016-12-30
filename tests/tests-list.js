@@ -4,10 +4,7 @@ var assert = require("assert");
 
 var context = gphoto.gp_context_new();
 
-var listPtr = ref.alloc(gphoto.CameraList);
-
-assert.equal(gphoto.gp_list_new(listPtr), gphoto.GP_OK);
-var list = listPtr.deref();
+var list = gphoto.NewList();
 assert(!ref.isNull(list));
 assert.equal(gphoto.gp_list_count(list), 0);
 
