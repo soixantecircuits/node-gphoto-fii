@@ -20,7 +20,7 @@ function getWidgetValue(widget)
             var txtPtr = ref.alloc("string");
             ret = gphoto2.gp_widget_get_value(widget, txtPtr);
 
-            if (ret != GP_OK)
+            if (ret != gphoto2.GP_OK)
             {
                 throw GphotoError("Failed to retrieve value of text widget " +
                     value.label);
@@ -38,7 +38,7 @@ function getWidgetValue(widget)
             var stepPtr = ref.alloc("float");
 
             ret = gphoto2.gp_widget_get_range(widget, minPtr, maxPtr, stepPtr);
-            if (ret != GP_OK)
+            if (ret != gphoto2.GP_OK)
             {
                 throw GphotoError("Failed to retrieve values of range widget " +
                     value.label);
@@ -48,10 +48,10 @@ function getWidgetValue(widget)
             {
                 label: value.label,
                 type: "range",
-                value: valuePtr.unref(),
-                max: maxPtr.unref(),
-                min: minPtr.unref(),
-                step: stepPtr.unref()
+                value: valuePtr.deref(),
+                max: maxPtr.deref(),
+                min: minPtr.deref(),
+                step: stepPtr.deref()
             };
             break;
         }
@@ -60,7 +60,7 @@ function getWidgetValue(widget)
         { /* int */
             var valuePtr = ref.alloc("int");
             ret = gphoto2.gp_widget_get_value(widget, valuePtr);
-            if (ret != GP_OK)
+            if (ret != gphoto2.GP_OK)
             {
                 throw GphotoError(
                     "Failed to retrieve values of toggle widget " +
@@ -68,7 +68,7 @@ function getWidgetValue(widget)
                 );
             }
             value.type = "toggle";
-            value.value = valuePtr.unref();
+            value.value = valuePtr.deref();
             break;
         }
 
@@ -76,7 +76,7 @@ function getWidgetValue(widget)
         {
             var valuePtr = ref.alloc("int");
             ret = gphoto2.gp_widget_get_value(widget, valuePtr);
-            if (ret != GP_OK)
+            if (ret != gphoto2.GP_OK)
             {
                 throw GphotoError(
                     "Failed to retrieve values of date/time widget " +
@@ -84,7 +84,7 @@ function getWidgetValue(widget)
                 );
             }
             value.type = "date";
-            value.value = Date(valuePtr.unref() * 1000.0)
+            value.value = Date(valuePtr.deref() * 1000.0)
             break;
         }
 
@@ -95,7 +95,7 @@ function getWidgetValue(widget)
             var choicesCount = gphoto2.gp_widget_count_choices(widget);
 
             ret = gphoto2.gp_widget_get_value(widget, currentChoicePtr);
-            if (ret != GP_OK)
+            if (ret != gphoto2.GP_OK)
             {
                 throw GphotoError(
                     "Failed to retrieve value of menu widget " + value.label
@@ -106,7 +106,7 @@ function getWidgetValue(widget)
             {
                 var choicePtr = ref.alloc("string");
                 gphoto2.gp_widget_get_choice(widget, i, choicePtr);
-                choices.append(choicePtr.deref())
+                choices.push(choicePtr.deref());
             }
             value.type = "choice";
             value.value = currentChoicePtr.deref();

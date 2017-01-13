@@ -38,24 +38,42 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_list_set_value":    ["int", [CameraList, "int", "string"]],
     // "gp_list_populate":     ["int", [CameraList, "string", "int"]],
 
-// To check
     "gp_camera_autodetect": ["int", [CameraList, GPContext]],
 
     "gp_camera_new":        ["int", [RefT(Camera)]],
     "gp_camera_init":       ["int", [Camera, GPContext]],
+    "gp_camera_exit":       ["int", [Camera, GPContext]],
+    "gp_camera_ref":        ["int", [Camera]],
+    "gp_camera_unref":      ["int", [Camera]],
+    "gp_camera_free":       ["int", [Camera]],
+
+    "gp_camera_get_config": ["int", [Camera, RefT(CameraWidget), GPContext]],
+    "gp_camera_list_config": [
+        "int", [Camera, CameraList, GPContext]
+    ],
+    // TODO - camera
+    "gp_camera_get_single_config": [
+        "int", [Camera, "string", RefT(CameraWidget), GPContext]
+    ],
+    "gp_camera_set_config": [
+        "int", [Camera, CameraWidget, GPContext]
+    ],
+    "gp_camera_set_single_config": [
+        "int", [Camera, "string", CameraWidget, GPContext]
+    ],
+
     "gp_camera_capture": [
         "int", [Camera, "int", RefT(CameraFilePath), GPContext]
     ],
-    "gp_camera_exit":       ["int", [Camera, GPContext]],
-    "gp_camera_unref":      ["int", [Camera]],
+    "gp_camera_trigger_capture":    ["int", [Camera, GPContext]],
+    "gp_camera_capture_preview":    ["int", [Camera, CameraFile, GPContext]],
 
-    "gp_camera_get_config": ["int", [Camera, RefT(CameraWidget), GPContext]],
-
+// TODO - widget
     "gp_widget_unref":          ["int", [CameraWidget]],
     "gp_widget_get_type":       ["int", [CameraWidget, RefT("int")]],
     "gp_widget_get_label":      ["int", [CameraWidget, RefT("string")]],
     "gp_widget_get_value":      ["int", [CameraWidget, RefT("string")]],
-    "gp_widget_get_range":      [
+    "gp_widget_get_range": [
         "int", [CameraWidget, RefT("float"), RefT("float"), RefT("float")]
     ],
     "gp_widget_count_choices":  ["int", [CameraWidget]],
@@ -69,16 +87,63 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_file_unref":        ["int", [CameraFile]],
 } );
 
+function assert_ok(returnValue) {
+    assert.equal(returnValue, module.exports.GP_OK);
+}
+
 function NewList() {
     var listPtr = ref.alloc(module.exports.CameraList);
-    var res = module.exports.gp_list_new(listPtr);
-    assert.equal(res, module.exports.GP_OK);
+    assert_ok(module.exports.gp_list_new(listPtr));
     return listPtr.deref();
+}
+
+function GetListEntry(cameraList, i) {
+    var name = ref.alloc("string");
+    var value = ref.alloc("string");
+    // TODO - return cleaner exception
+    assert_ok(module.exports.gp_list_get_name(cameraList, i, name));
+    assert_ok(module.exports.gp_list_get_value(cameraList, i, value));
+    return [name.deref(), value.deref()];
+}
+
+function NewCamera() {
+    var cameraPtr = ref.alloc(module.exports.Camera);
+    assert_ok(module.exports.gp_camera_new(cameraPtr));
+    return cameraPtr.deref();
+}
+
+// TODO - Init Camera with parameters
+
+function NewInitCamera(context) {
+    var cameraPtr = ref.alloc(module.exports.Camera);
+    assert_ok(module.exports.gp_camera_new(cameraPtr));
+    assert_ok(module.exports.gp_camera_init(cameraPtr.deref(), context));
+    return cameraPtr.deref();
+}
+
+function GetConfig(camera, context, name = null) {
+    var configPtr = ref.alloc(module.exports.CameraWidget);
+    if (name == null) {
+        assert_ok(module.exports.gp_camera_get_config(
+            camera, configPtr, context
+        ));
+    }
+    else {
+        assert_ok(module.exports.gp_camera_get_single_config(
+            camera, name, configPtr, context
+        ));
+    }
+    // TODO - replace with exceptions ?
+    return configPtr.deref();
 }
 
 module.exports = gphoto2
 
-module.exports.NewList = NewList;
+module.exports.NewList =        NewList;
+module.exports.NewCamera =      NewCamera;
+module.exports.NewInitCamera =  NewInitCamera;
+module.exports.GetListEntry =   GetListEntry;
+module.exports.GetConfig =      GetConfig;
 
 module.exports.GPContext =          GPContext;
 module.exports.CameraList =         CameraList;
