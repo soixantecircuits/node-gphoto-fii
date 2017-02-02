@@ -26,6 +26,8 @@ function addWidgetToTree(tree, widget) {
 
     tree[name || label] = subtree;
 }
+module.exports.addWidgetToTree = addWidgetToTree;
+
 
 var widgetTypeNames = {
     [gphoto2.GP_WIDGET_TEXT]:       "string",
@@ -145,12 +147,16 @@ function getWidgetValue(widget) {
 
     return value;
 }
+module.exports.getWidgetValue = getWidgetValue;
+
 
 function getWidgetTree(widget) {
     tree = Object();
     addWidgetToTree(tree, widget);
     return tree;
 }
+module.exports.getWidgetTree = getWidgetTree;
+
 
 function assert_ok(returnValue) {
     assert.equal(returnValue, gphoto2.GP_OK);
@@ -196,6 +202,8 @@ function setWidgetValue(widget, value) {
         );
     }
 }
+module.exports.setWidgetValue = setWidgetValue;
+
 
 function setCameraSetting(camera, key, value, context) {
     var widget = gphoto2.GetConfig(camera, context, key);
@@ -208,9 +216,4 @@ function setCameraSetting(camera, key, value, context) {
     ));
     gphoto2.gp_widget_unref(widget);
 }
-
-module.exports.getWidgetValue = getWidgetValue;
-module.exports.addWidgetToTree = addWidgetToTree;
-module.exports.getWidgetTree = getWidgetTree;
-module.exports.setWidgetValue = setWidgetValue;
 module.exports.setCameraSetting = setCameraSetting;
