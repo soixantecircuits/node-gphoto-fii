@@ -43,6 +43,8 @@ function use_camera(context, camera, dest_path)
     return 0;
 }
 
+var TAKE_PHOTOS = false;
+
 function main()
 {
     var context = lib.gp_context_new()
@@ -72,13 +74,13 @@ function main()
     configValue = get_config.getWidgetValue(configPtr.deref());
     console.log(configValue);
 
-    for (var i = 0; i < 10; i++)
-    {
-        res = use_camera(context, camera, "my_photo_" + i + ".cr2");
-        if (res < 0)
+    if (TAKE_PHOTOS) {
+        for (var i = 0; i < 10; i++) {
+            res = use_camera(context, camera, "my_photo_" + i + ".cr2");
+            if (res < 0)
             return res;
+        }
     }
-
 
     lib.gp_camera_exit(camera, context);
     lib.gp_camera_unref(camera);
