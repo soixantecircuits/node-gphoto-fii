@@ -17,6 +17,10 @@ var CameraFilePath = Struct({
     folder: ArrayType(ref.types.uchar, 1024)
 });
 
+var CameraText = Struct({
+    text: ArrayType(ref.types.char, 32 * 1024)
+});
+
 module.exports.GPContext =          GPContext;
 module.exports.CameraList =         CameraList;
 module.exports.Camera =             Camera;
@@ -24,6 +28,7 @@ module.exports.CameraFile =         CameraFile;
 module.exports.CameraWidget =       CameraWidget;
 module.exports.CameraWidgetType =   RefT("int");
 module.exports.CameraFilePath =     CameraFilePath;
+module.exports.CameraText =         CameraText;
 
 
 var gphoto2 = ffi.Library("libgphoto2", {
@@ -71,6 +76,9 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_camera_set_single_config": [
         "int", [Camera, "string", CameraWidget, GPContext]
     ],
+    "gp_camera_get_summary":    ["int", [Camera, CameraText, GPContext]],
+    "gp_camera_get_manual":     ["int", [Camera, CameraText, GPContext]],
+    "gp_camera_get_about":      ["int", [Camera, CameraText, GPContext]],
 
     "gp_camera_capture": [
         "int", [Camera, "int", RefT(CameraFilePath), GPContext]
