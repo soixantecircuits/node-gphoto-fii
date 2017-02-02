@@ -1,5 +1,6 @@
 var ref = require("ref");
 var gphoto2 = require("./gphoto2");
+var assert = require("assert");
 
 function addWidgetToTree(tree, widget) {
     // Code modeled after `display_widgets` in gphoto2/actions.c
@@ -167,6 +168,64 @@ function getWidgetTree(widget) {
     return tree;
 }
 
+function assert_ok(returnValue) {
+    assert.equal(returnValue, gphoto2.GP_OK);
+}
+
+function setWidgetValue(widget, value) {
+    var roPtr = ref.alloc("int");
+    assert_ok(gphoto2.gp_widget_get_readonly(widget, roPtr));
+    assert(!roPtr.deref());
+
+    var typePtr = ref.alloc("int");
+    gphoto2.gp_widget_get_type(widget, typePtr);
+    var widgetType = typePtr.deref();
+
+    var stringWidgets = [
+        gphoto2.GP_WIDGET_MENU, gphoto2.GP_WIDGET_TEXT, gphoto2.GP_WIDGET_RADIO
+    ];
+    var floatWidgets = [
+        gphoto2.GP_WIDGET_RANGE
+    ];
+    var intWidgets = [
+        gphoto2.GP_WIDGET_DATE, gphoto2.GP_WIDGET_TOGGLE
+    ];
+
+    if (stringWidgets.includes(widgetType)) {
+        assert.equal(typeof value, "string");
+        assert_ok(gphoto2.gp_widget_set_value(widget, ref.allocCString(value)));
+    }
+    else if (floatWidgets.includes(widgetType)) {
+        assert.equal(typeof value, "number");
+        assert_ok(gphoto2.gp_widget_set_value(widget, ref.alloc("int", value)));
+    }
+    else if (intWidgets.includes(widgetType)) {
+        assert.equal(typeof value, "number");
+        assert_ok(
+            gphoto2.gp_widget_set_value(widget, ref.alloc("float", value))
+        );
+    }
+    else {
+        throw new Error(
+            "Cannot change value of given widget"
+        );
+    }
+}
+
+function setCameraSetting(camera, key, value, context) {
+    var widget = gphoto2.GetConfig(camera, context, key);
+
+    setWidgetValue(widget, value);
+
+    //assert_ok(gphoto2.gp_camera_set_config(camera, widget, context));
+    assert_ok(gphoto2.gp_camera_set_single_config(
+        camera, key, widget, context
+    ));
+    gphoto2.gp_widget_unref(widget);
+}
+
 module.exports.getWidgetValue = getWidgetValue;
 module.exports.addWidgetToTree = addWidgetToTree;
 module.exports.getWidgetTree = getWidgetTree;
+module.exports.setWidgetValue = setWidgetValue;
+module.exports.setCameraSetting = setCameraSetting;

@@ -28,7 +28,7 @@ if (count == 0) {
     return;
 }
 else if (LOG_EVERYTHING) {
-    console.log("Camera(s) detected (" + count + "):")
+    console.log("Camera(s) detected (" + count + "):");
     for (var i = 0; i < count; ++i) {
         var name, value;
         [name, value] = gphoto.GetListEntry(cameraList, i);
@@ -43,6 +43,8 @@ var config = gphoto.GetConfig(camera, context);
 var tree = get_config.getWidgetTree(config);
 debug_log(util.inspect(tree, {showHidden: false, depth: null}));
 gphoto.gp_widget_unref(config);
+
+get_config.setCameraSetting(camera, "iso", "400", context);
 
 
 gphoto.gp_camera_unref(camera);
