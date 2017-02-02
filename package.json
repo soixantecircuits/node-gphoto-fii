@@ -1,7 +1,7 @@
 {
-  "name": "tests_gphoto2",
-  "version": "0.1.0",
-  "description": " Tests for a Node.js wrapper of C library libgphoto2",
+  "name": "gphoto2_ffi",
+  "version": "0.2.0",
+  "description": "Node.js wrapper of C library libgphoto2",
   "main": "gphoto2.js",
   "repository": "https://github.com/PoignardAzur/tests_gphoto2.git",
   "author": "Olivier FAURE <olivier.faure@epitech.eu>",
