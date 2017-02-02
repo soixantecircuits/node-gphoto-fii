@@ -87,13 +87,18 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_file_unref":        ["int", [CameraFile]],
 } );
 
-function assert_ok(returnValue) {
-    assert.equal(returnValue, module.exports.GP_OK);
+var gp2 = gphoto2;
+
+function assert_ok(funcName, returnValue) {
+    if (returnValue != module.exports.GP_OK) {
+        errorStr = gp2.gp_port_result_as_string(returnValue);
+        throw Error(funcName + " returned " + returnValue + ": " + errorStr);
+    }
 }
 
 function NewList() {
     var listPtr = ref.alloc(module.exports.CameraList);
-    assert_ok(module.exports.gp_list_new(listPtr));
+    assert_ok("gp_list_new", gp2.gp_list_new(listPtr));
     return listPtr.deref();
 }
 
@@ -101,14 +106,14 @@ function GetListEntry(cameraList, i) {
     var name = ref.alloc("string");
     var value = ref.alloc("string");
     // TODO - return cleaner exception
-    assert_ok(module.exports.gp_list_get_name(cameraList, i, name));
-    assert_ok(module.exports.gp_list_get_value(cameraList, i, value));
+    assert_ok("gp_list_get_name", gp2.gp_list_get_name(cameraList, i, name));
+    assert_ok("gp_list_get_value", gp2.gp_list_get_value(cameraList, i, value));
     return [name.deref(), value.deref()];
 }
 
 function NewCamera() {
     var cameraPtr = ref.alloc(module.exports.Camera);
-    assert_ok(module.exports.gp_camera_new(cameraPtr));
+    assert_ok("gp_camera_new", gp2.gp_camera_new(cameraPtr));
     return cameraPtr.deref();
 }
 
@@ -116,24 +121,24 @@ function NewCamera() {
 
 function NewInitCamera(context) {
     var cameraPtr = ref.alloc(module.exports.Camera);
-    assert_ok(module.exports.gp_camera_new(cameraPtr));
-    assert_ok(module.exports.gp_camera_init(cameraPtr.deref(), context));
+    assert_ok("gp_camera_new", gp2.gp_camera_new(cameraPtr));
+    assert_ok("gp_camera_init", gp2.gp_camera_init(cameraPtr.deref(), context));
     return cameraPtr.deref();
 }
 
 function GetConfig(camera, context, name = null) {
     var configPtr = ref.alloc(module.exports.CameraWidget);
     if (name == null) {
-        assert_ok(module.exports.gp_camera_get_config(
+        assert_ok("gp_camera_get_config", gp2.gp_camera_get_config(
             camera, configPtr, context
         ));
     }
     else {
-        assert_ok(module.exports.gp_camera_get_single_config(
-            camera, name, configPtr, context
-        ));
+        assert_ok(
+            "gp_camera_get_single_config",
+            gp2.gp_camera_get_single_config(camera, name, configPtr, context)
+        );
     }
-    // TODO - replace with exceptions ?
     return configPtr.deref();
 }
 
