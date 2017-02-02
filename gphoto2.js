@@ -11,6 +11,7 @@ var CameraList = RefT("void");
 var Camera = RefT("void");
 var CameraFile = RefT("void");
 var CameraWidget = RefT("void");
+var CameraWidgetType = ref.types.int;
 
 var CameraFilePath = Struct({
     name: ArrayType(ref.types.uchar, 128),
@@ -68,16 +69,55 @@ var gphoto2 = ffi.Library("libgphoto2", {
     "gp_camera_trigger_capture":    ["int", [Camera, GPContext]],
     "gp_camera_capture_preview":    ["int", [Camera, CameraFile, GPContext]],
 
-// TODO - widget
+// TODO - check widget
+// TODO - NewWidget ?
+
+    "gp_widget_new": [
+        "int", [CameraWidgetType, "string", RefT(CameraWidget)]
+    ],
+    "gp_widget_free":           ["int", [CameraWidget]],
+    "gp_widget_ref":            ["int", [CameraWidget]],
     "gp_widget_unref":          ["int", [CameraWidget]],
-    "gp_widget_get_type":       ["int", [CameraWidget, RefT("int")]],
-    "gp_widget_get_label":      ["int", [CameraWidget, RefT("string")]],
-    "gp_widget_get_value":      ["int", [CameraWidget, RefT("string")]],
-    "gp_widget_get_range": [
+
+    "gp_widget_append":         ["int", [CameraWidget, CameraWidget]],
+    "gp_widget_prepend":        ["int", [CameraWidget, CameraWidget]],
+    "gp_widget_count_children": ["int", [CameraWidget]],
+
+    "gp_widget_get_child": [
+        "int", [CameraWidget, "int", RefT(CameraWidget)]
+    ],
+    "gp_widget_get_child_by_label": [
+        "int", [CameraWidget, "string", RefT(CameraWidget)]
+    ],
+    "gp_widget_get_child_by_id": [
+        "int", [CameraWidget, "int", RefT(CameraWidget)]
+    ],
+    "gp_widget_get_child_by_name": [
+        "int", [CameraWidget, "string", RefT(CameraWidget)]
+    ],
+    "gp_widget_get_root":   ["int", [CameraWidget, RefT(CameraWidget)]],
+    "gp_widget_get_parent": ["int", [CameraWidget, RefT(CameraWidget)]],
+
+    "gp_widget_set_value":  ["int", [CameraWidget, "pointer"]],
+    "gp_widget_get_value":  ["int", [CameraWidget, "pointer"]],
+    "gp_widget_set_name":   ["int", [CameraWidget, "string"]],
+    "gp_widget_get_name":   ["int", [CameraWidget, RefT("string")]],
+    "gp_widget_set_info":   ["int", [CameraWidget, "string"]],
+    "gp_widget_get_info":   ["int", [CameraWidget, RefT("string")]],
+    "gp_widget_get_id":     ["int", [CameraWidget, RefT("int")]],
+    "gp_widget_get_type":   ["int", [CameraWidget, RefT(CameraWidgetType)]],
+    "gp_widget_get_label":  ["int", [CameraWidget, RefT("string")]],
+    "gp_widget_set_range":  ["int", [CameraWidget, "float", "float", "float"]],
+    "gp_widget_get_range":  [
         "int", [CameraWidget, RefT("float"), RefT("float"), RefT("float")]
     ],
+    "gp_widget_add_choice":     ["int", [CameraWidget, "string"]],
     "gp_widget_count_choices":  ["int", [CameraWidget]],
     "gp_widget_get_choice":     ["int", [CameraWidget, "int", RefT("string")]],
+    "gp_widget_set_changed":    ["int", [CameraWidget, "int"]],
+    "gp_widget_changed":        ["int", [CameraWidget]],
+    "gp_widget_set_readonly":   ["int", [CameraWidget, "int"]],
+    "gp_widget_get_readonly":   ["int", [CameraWidget, RefT("int")]],
 
     "gp_file_new":          ["int", [RefT(CameraFile)]],
     "gp_camera_file_get":   [

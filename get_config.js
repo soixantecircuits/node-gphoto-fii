@@ -1,8 +1,29 @@
 var ref = require("ref");
 var gphoto2 = require("./gphoto2");
 
-function getWidgetValue(widget)
-{
+function addWidgetToTree(tree, widget) {
+    // Code modeled after `display_widgets` in gphoto2/actions.c
+    var namePtr = ref.alloc("string");
+    var labelPtr = ref.alloc("string");
+    gphoto2.gp_widget_get_label(widget, labelPtr); // TODO - check return val
+    gphoto2.gp_widget_get_name(widget, namePtr);
+    var name = namePtr.deref();
+    var label = labelPtr.deref();
+
+    var subtree = getWidgetValue(widget); // TODO - check return val
+
+    var n = gphoto2.gp_widget_count_children(widget);
+    for (var i = 0; i < n; ++i) {
+        var childWidgetPtr = ref.alloc(gphoto2.CameraWidget);
+        gphoto2.gp_widget_get_child(widget, i, childWidgetPtr);
+        // TODO - exception
+        addWidgetToTree(subtree, childWidgetPtr.deref());
+    }
+
+    tree[name || label] = subtree;
+}
+
+function getWidgetValue(widget) {
     var labelPtr = ref.alloc("string");
     var typePtr = ref.alloc("int");
     var ret = gphoto2.GP_OK;
@@ -140,17 +161,12 @@ function getWidgetValue(widget)
     return value;
 }
 
-module.exports.getWidgetValue = getWidgetValue;
+function getWidgetTree(widget) {
+    tree = Object();
+    addWidgetToTree(tree, widget);
+    return tree;
+}
 
-/*
-gp_widget_get_type(widget, typePtr);
-gp_widget_get_label(widget, labelPtr);
-gp_widget_get_value(widget, txtPtr);
-gp_widget_get_range(widget, minPtr, maxPtr, stepPtr);
-gp_widget_get_value(widget, valuePtr);
-gp_widget_get_value(widget, valuePtr);
-gp_widget_get_value(widget, valuePtr);
-gp_widget_count_choices(widget);
-gp_widget_get_value(widget, currentChoicePtr);
-_get_choice(widget, i, choicePtr);
-*/
+module.exports.getWidgetValue = getWidgetValue;
+module.exports.addWidgetToTree = addWidgetToTree;
+module.exports.getWidgetTree = getWidgetTree;
