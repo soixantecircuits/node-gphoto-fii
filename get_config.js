@@ -1,6 +1,12 @@
 var ref = require("ref");
-var gphoto2 = require("./gphoto2");
 var assert = require("assert");
+
+var gphoto2 = Object.assign(
+    {},
+    require("./gphoto2_ffi"),
+    require("./functions"),
+    require("./constants")
+);
 
 var GPhotoError = Error;
 
@@ -168,7 +174,7 @@ function setWidgetValue(widget, value) {
     assert(!roPtr.deref());
 
     var typePtr = ref.alloc("int");
-    gphoto2.gp_widget_get_type(widget, typePtr);
+    assert_ok(gphoto2.gp_widget_get_type(widget, typePtr));
     var widgetType = typePtr.deref();
 
     var stringWidgets = [
@@ -210,7 +216,6 @@ function setCameraSetting(camera, key, value, context) {
 
     setWidgetValue(widget, value);
 
-    //assert_ok(gphoto2.gp_camera_set_config(camera, widget, context));
     assert_ok(gphoto2.gp_camera_set_single_config(
         camera, key, widget, context
     ));
