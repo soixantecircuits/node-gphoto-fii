@@ -43,7 +43,7 @@ config = configPtr.deref();
 
 var configList = gphoto.NewList();
 assert_ok(gphoto.gp_camera_list_config(camera, configList, context));
-count = gphoto.gp_list_count(cameraList);
+count = gphoto.gp_list_count(configList);
 debug_log("Config(s) (" + count + "):");
 
 var get_config = require("../get_config");
