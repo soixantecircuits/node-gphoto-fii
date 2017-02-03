@@ -188,15 +188,12 @@ function setWidgetValue(widget, value) {
     ];
 
     if (stringWidgets.includes(widgetType)) {
-        assert.equal(typeof value, "string");
         assert_ok(gp2.gp_widget_set_value(widget, ref.allocCString(value)));
     }
     else if (floatWidgets.includes(widgetType)) {
-        assert.equal(typeof value, "number");
         assert_ok(gp2.gp_widget_set_value(widget, ref.alloc("int", value)));
     }
     else if (intWidgets.includes(widgetType)) {
-        assert.equal(typeof value, "number");
         assert_ok(
             gp2.gp_widget_set_value(widget, ref.alloc("float", value))
         );
