@@ -1,4 +1,4 @@
-tests_gphoto2
+gphoto2_ffi
 =============
 
 Tests for a Node.js module, generated with the node-ffi library, that wraps the
