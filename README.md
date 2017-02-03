@@ -9,7 +9,7 @@ Example
 -------
 
     var ref = require("ref");
-    var lib = require("./gphoto2");
+    var lib = require("gphoto2_ffi");
 
     var context = lib.gp_context_new()
 
