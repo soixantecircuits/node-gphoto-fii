@@ -1,37 +1,41 @@
 gphoto2_ffi
 =============
 
-Tests for a Node.js module, generated with the node-ffi library, that wraps the
-functions of the C library libgphoto2.
+This is a Node.js module, generated with the node-ffi library, that wraps
+around the functions of the C library libgphoto2. Inspired by node-gphoto2.
+
+
+Installation
+------------
+
+No npm package so far; you can install this module by cloning it into your
+project:
+
+    git clone https://github.com/soixantecircuits/node-gphoto-fii.git
+
+    mv node-gphoto-fii ./node_modules
 
 
 Example
 -------
 
-    var ref = require("ref");
-    var lib = require("gphoto2_ffi");
+    const gp2 = require("gphoto2_ffi");
 
-    var context = lib.gp_context_new()
+    var context = gp2.gp_context_new();
+    var camera = gp2.NewInitCamera(context);
 
-    var CameraList = ref.refType("void");
+    var config = gp2.GetConfig(camera, context, name);
+    var tree = gp2.getWidgetTree(config);
+    console.log(name + ":");
+    console.log(util.inspect(tree[name], {showHidden: false, depth: null}));
 
-    var cameraInfosPtr = ref.alloc(CameraList);
-    if (lib.gp_list_new(cameraInfosPtr) < 0)
-        process.exit(1);
-    var cameraInfos = cameraInfosPtr.deref();
-
-    if (lib.gp_camera_autodetect(cameraInfos, context) < 0)
-        process.exit(1);
-    console.log(lib.gp_list_count(cameraInfos) + " cameras detected");
-
-    lib.gp_list_unref(cameraInfos);
-
-    lib.gp_context_unref(context);
-
-    process.exit(0);
+    gp2.gp_widget_unref(config);
+    gp2.gp_camera_exit(camera, context);
+    gp2.gp_camera_unref(camera);
+    gp2.gp_context_unref(context);
 
 
 License
 -------
 
-License MIT. See `LICENSE` file.
+MIT License. See `LICENSE` file.
